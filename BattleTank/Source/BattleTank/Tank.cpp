@@ -8,6 +8,7 @@
 
 
 
+
 // Sets default values ----- the constructor
 ATank::ATank()
 {
@@ -52,15 +53,14 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 
 void ATank::Fire()
 {
-	auto Time = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("%f: Fire Pressed"), Time);
-
 	if (!Barrel) { return;  } //protecting pointer. if there isnt one, no need to run the code 
 
 	//Spawn a projectile at the socketlocation
-	GetWorld()->SpawnActor<AProjectile>(
+	auto ProjectileT = GetWorld()->SpawnActor<AProjectile>(
 		ProjectileBlueprint,
 		Barrel->GetSocketLocation(FName("Projectile")),
 		Barrel->GetSocketRotation(FName("Projectile"))
 		);
+
+	ProjectileT->LaunchProjectile(LaunchSpeed);
 }

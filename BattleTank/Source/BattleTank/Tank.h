@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Projectile.h"
 #include "TankAimingComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
@@ -28,6 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Fire();
 
+	
+
 protected:
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
@@ -43,7 +46,7 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 4000; //1000m/s TODO find sensible default
+	float LaunchSpeed = 4000; //4000m/s
 
 	UPROPERTY(EditAnywhere, Category = Setup)
 	TSubclassOf<AProjectile> ProjectileBlueprint;
