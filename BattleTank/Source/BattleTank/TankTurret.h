@@ -18,7 +18,7 @@ public:
 	void RotateTurret(float RotateSpeed);
 
 private:
-	UPROPERTY(EditAnywhere, Category = Setup)
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
 		float MaxDegreesPerSecond = 20;
 
 };
