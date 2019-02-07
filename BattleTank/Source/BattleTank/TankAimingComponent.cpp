@@ -27,7 +27,8 @@ void UTankAimingComponent::InitializeComponent(UTankBarrel* BarrelToSet, UTankTu
 
 void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
 {
-	if (!Barrel) { return; } //protect barrel pointer. if dont have barrel, get out of here
+	if (!ensure(Barrel)) { return; } //protect barrel pointer. if dont have barrel, get out of here
+	
 	FVector OutLaunchVelocity(0);
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
 
@@ -49,16 +50,14 @@ void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal(); //use to point the barrel
 		auto TankName = GetOwner()->GetName();
 		MoveBarrelTowards(AimDirection);
-
-		auto Time = GetWorld()->GetTimeSeconds();
-	
 	}
 	//if no solution, do nothing
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
-	if (!Barrel || !Turret) { return; }
+	if (!ensure(Barrel) || !ensure(Turret)) { return; }
+	UE_LOG(LogTemp, Warning, TEXT("I'm here"));
 
 	//work out difference between current barrel rotation and aim direction
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();

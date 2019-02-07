@@ -4,7 +4,7 @@
 #include "TankAIController.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
-
+//Depends onn movement component via pathfinding system
 
 void ATankAIController::BeginPlay()
 {
@@ -18,8 +18,8 @@ void ATankAIController::Tick(float DeltaTime)
 	auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	auto TankAIController = Cast<ATank>(GetPawn());
 
-	if (!PlayerTank) { return; }
-	if (PlayerTank) {
+	if (!ensure(PlayerTank)) { return; }
+	if (ensure(PlayerTank)) {
 		//Move towards player
 		MoveToActor(PlayerTank, AcceptanceRadius); //30meters TODO check radius is in cm
 

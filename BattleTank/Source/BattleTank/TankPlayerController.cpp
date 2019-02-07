@@ -6,6 +6,10 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
+	FoundAimingComponent(AimingComponent);
+	
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -22,7 +26,7 @@ ATank* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControlledTank()) { return; } //checking if we have controlled tank because doesn't make sense to start aiming towards crosshair unless we are controlling a tank
+	if (!ensure(GetControlledTank())) { return; } //checking if we have controlled tank because doesn't make sense to start aiming towards crosshair unless we are controlling a tank
 
 	FVector HitLocation; //out parameter. stop using include out!
 	if (GetSightRayHitLocation(HitLocation)) { //Has "side effect", is going to line trace
