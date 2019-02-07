@@ -4,7 +4,6 @@
 
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
-#include "Tank.h"
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "TankAIController.generated.h"

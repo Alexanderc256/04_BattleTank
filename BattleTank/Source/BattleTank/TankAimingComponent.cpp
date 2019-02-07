@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
+#include "Projectile.h"
 #include "Engine/World.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
@@ -25,7 +26,7 @@ void UTankAimingComponent::InitializeComponent(UTankBarrel* BarrelToSet, UTankTu
 }
 
 
-void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	if (!ensure(Barrel)) { return; } //protect barrel pointer. if dont have barrel, get out of here
 	
@@ -37,7 +38,7 @@ void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
 		this,
 		OutLaunchVelocity,
 		StartLocation,
-		WorldSpaceAim,
+		HitLocation,
 		LaunchSpeed,
 		false,//Middle 3 parameters are defaults and not needed! false, 0, 0
 		0,
@@ -57,7 +58,6 @@ void UTankAimingComponent::AimAt(FVector WorldSpaceAim, float LaunchSpeed)
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
 	if (!ensure(Barrel) || !ensure(Turret)) { return; }
-	UE_LOG(LogTemp, Warning, TEXT("I'm here"));
 
 	//work out difference between current barrel rotation and aim direction
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
@@ -65,5 +65,25 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
 	Barrel->ElevateBarrel(DeltaRotator.Pitch);
-	Turret->RotateTurret(DeltaRotator.Yaw);
+	Turret->RotateTurret(DeltaRotator.GetNormalized().Yaw);
+}
+
+void UTankAimingComponent::Fire()
+{
+	//Set timer and only fire if that timer has passed
+	bool isReloaded = FPlatformTime::Seconds() - LastFireTime > ReloadTimeInSeconds; //can also use GetWorld and GetTimeSeconds instead. Platform time is not well documented
+
+	//Spawn a projectile at the socketlocation
+	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
+
+	if (isReloaded) {
+		auto ProjectileT = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile"))
+			);
+
+		ProjectileT->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }

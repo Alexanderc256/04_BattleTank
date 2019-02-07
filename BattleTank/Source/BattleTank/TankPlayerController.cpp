@@ -1,12 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "TankAimingComponent.h"
 #include "Engine/World.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 	FoundAimingComponent(AimingComponent);
 	
@@ -18,19 +19,15 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimTowardsCrosshair();
 }
 
-//Get the tank player is possessing
-ATank* ATankPlayerController::GetControlledTank() const 
-{
-	return Cast<ATank>(GetPawn());
-}
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!ensure(GetControlledTank())) { return; } //checking if we have controlled tank because doesn't make sense to start aiming towards crosshair unless we are controlling a tank
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 
 	FVector HitLocation; //out parameter. stop using include out!
 	if (GetSightRayHitLocation(HitLocation)) { //Has "side effect", is going to line trace
-		GetControlledTank()->AimAt(HitLocation); //GETS CONTROLLED TANK AND SAYS AIM AT THIS
+		AimingComponent->AimAt(HitLocation); //GETS CONTROLLED TANK AND SAYS AIM AT THIS
 	}
 
 }
