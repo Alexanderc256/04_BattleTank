@@ -13,9 +13,17 @@ void UTankMovementComponent::InitializeComponent(UTankTracks* LeftTrackToSet, UT
 void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
 	//No need to call Super as we're replacing the functionality
-	auto TankName = GetOwner()->GetName();
-	auto MoveVelocityString = MoveVelocity.ToString();
-	UE_LOG(LogTemp, Warning, TEXT("%s is moving at %s"), *TankName, *MoveVelocityString);
+
+	auto TankForwardDirection = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	auto AIForwardIntention = MoveVelocity.GetSafeNormal();
+
+	//Get AI tank to drive forward
+	auto ForwardThrow = FVector::DotProduct(TankForwardDirection, AIForwardIntention);
+	IntendMoveForward(ForwardThrow);
+
+	//Get AI tank to turn
+	auto RightThrow = FVector::CrossProduct(TankForwardDirection, AIForwardIntention).Z;
+	IntendTurnRight(RightThrow);
 }
 
 void UTankMovementComponent::IntendMoveForward(float Throw)
@@ -24,14 +32,12 @@ void UTankMovementComponent::IntendMoveForward(float Throw)
 	
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
-	//TODO Prevent double-speed due to dual control use
 }
 
 void UTankMovementComponent::IntendTurnRight(float Throw)
 {
 	if (!LeftTrack || !RightTrack) { return; }
 
-	LeftTrack->SetThrottle(Throw);
-	RightTrack->SetThrottle(-Throw);
-	//TODO Prevent double-speed due to dual control use
+	LeftTrack->SetThrottle(-Throw);
+	RightTrack->SetThrottle(Throw);
 }
