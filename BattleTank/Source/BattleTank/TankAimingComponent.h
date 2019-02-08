@@ -39,12 +39,16 @@ public:
 protected:
 	//Enum initialization
 	UPROPERTY(BlueprintReadOnly, Category = "Status")
-	EFiringStatus FiringStatus = EFiringStatus::Aiming;
+	EFiringStatus FiringStatus = EFiringStatus::Reloading;
 
 
 private:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+	virtual void BeginPlay() override;
 
 	void MoveBarrelTowards(FVector AimDirection);
 
@@ -57,7 +61,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float LaunchSpeed = 4000; //4000m/s
 
 	double LastFireTime = 0;
