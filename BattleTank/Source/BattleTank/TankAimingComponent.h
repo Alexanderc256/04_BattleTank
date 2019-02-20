@@ -12,7 +12,8 @@ enum class EFiringStatus : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	NoAmmo
 };
 
 //forward declaration
@@ -36,6 +37,9 @@ public:
 	void InitializeComponent(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
 	EFiringStatus GetFiringStatus() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Fire")
+	int GetRoundsLeft() const;
 
 protected:
 	//Enum initialization
@@ -70,5 +74,7 @@ private:
 	double LastFireTime = 0;
 
 	FVector AimDirection;
+
+	int RoundsLeft = 3;
 
 };
