@@ -35,6 +35,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void InitializeComponent(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
+	EFiringStatus GetFiringStatus() const;
 
 protected:
 	//Enum initialization
