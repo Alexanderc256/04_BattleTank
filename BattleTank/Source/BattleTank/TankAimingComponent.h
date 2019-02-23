@@ -41,6 +41,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Fire")
 	int32 GetRoundsLeft() const;
 
+	
+
 protected:
 	//Enum initialization
 	UPROPERTY(BlueprintReadOnly, Category = "Status")
@@ -66,10 +68,10 @@ private:
 	float ReloadTimeInSeconds = 3;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	TSubclassOf<AProjectile> ProjectileBlueprint;
+		TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	float LaunchSpeed = 4000; //4000m/s
+		float LaunchSpeed = 4000; //4000m/s
 
 	double LastFireTime = 0;
 

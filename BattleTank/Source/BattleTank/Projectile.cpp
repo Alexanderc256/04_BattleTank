@@ -7,6 +7,7 @@
 #include "Engine/EngineTypes.h"
 
 
+
 // Sets default values
 AProjectile::AProjectile()
 {
@@ -29,13 +30,18 @@ AProjectile::AProjectile()
 	ImpactBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	ImpactBlast->bAutoActivate = false;
 
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("Explosion Force"));
+	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
 }
-//TODO fix unable to bind to delegate OnHit
+
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
+
 }
 
 // Called when the game starts or when spawned
