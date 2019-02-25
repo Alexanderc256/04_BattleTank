@@ -5,7 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Engine/EngineTypes.h"
-
+#include "TimerManager.h"
 
 
 // Sets default values
@@ -42,6 +42,12 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	ImpactBlast->Activate();
 	ExplosionForce->FireImpulse();
 
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+
+	FTimerHandle Timer;
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
+
 }
 
 // Called when the game starts or when spawned
@@ -56,4 +62,9 @@ void AProjectile::LaunchProjectile(float Speed)
 	
 	ProjectileMovement->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
 	ProjectileMovement->Activate();
+}
+
+void AProjectile::OnTimerExpire()
+{
+	Destroy();
 }
