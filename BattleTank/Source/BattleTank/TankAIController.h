@@ -8,7 +8,6 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-
 /**
  * 
  */
@@ -20,6 +19,11 @@ class BATTLETANK_API ATankAIController : public AAIController
 private:
 		virtual void BeginPlay() override;
 		virtual void Tick(float DeltaTime) override;
+
+		virtual void SetPawn(APawn* InPawn) override;
+
+		UFUNCTION()
+		void OnPossessedTankDeath();
 
 		//How close AI tank can get to the player
 		UPROPERTY(EditDefaultsOnly, Category = "Setup")
