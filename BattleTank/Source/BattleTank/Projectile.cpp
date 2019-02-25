@@ -6,6 +6,9 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Engine/EngineTypes.h"
 #include "TimerManager.h"
+#include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 
 
 // Sets default values
@@ -42,8 +45,19 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	ImpactBlast->Activate();
 	ExplosionForce->FireImpulse();
 
+	UGameplayStatics::ApplyRadialDamage(
+		this,
+		ProjectileDamage,
+		GetActorLocation(),
+		ExplosionForce->Radius,		//for consistency
+		UDamageType::StaticClass(),
+		TArray<AActor*>()	//damage all actors
+		);
+
 	SetRootComponent(ImpactBlast);
 	CollisionMesh->DestroyComponent();
+
+
 
 	FTimerHandle Timer;
 	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
